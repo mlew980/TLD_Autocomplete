@@ -1,0 +1,9 @@
+{
+	//Specify the location of all your .tld files
+	//e.g. /home/michael-l/tlds
+	"tld_folder_path":"/home/michael-l/tlds",
+
+	//Inside your .tld files you should have a xmlns attribute, by default it should be the one below
+	//but if you use anything else please insert it below.
+	"xml_name_space": "http://java.sun.com/xml/ns/javaee"
+}

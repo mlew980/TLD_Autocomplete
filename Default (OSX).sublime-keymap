@@ -1,0 +1,3 @@
+[
+    { "keys": ["super+space"], "command": "auto_complete"}
+]
