@@ -18,6 +18,13 @@
                                     "file": "${packages}/TLD_Autocomplete/TLD_Autocomplete.sublime-settings"
                                 },
                                 "caption": "Settings – Default"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/User/TLD_Autocomplete.sublime-settings"
+                                },
+                                "caption": "Settings – User"
                             }
                         ]
                     }

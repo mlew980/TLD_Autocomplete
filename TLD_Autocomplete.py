@@ -43,9 +43,10 @@ class ShortNameTagCompletions(sublime_plugin.EventListener):
             ch = view.substr(sublime.Region(pt, pt + 1))
             autoCompletion = []
             if (ch == ' '):
-                currentLine = view.substr(view.line(view.sel()[0].begin()))
+                currentSubTag = view.substr(view.word(pt))
+                currentTag = view.substr(view.word(pt - len(currentSubTag) - 1))
                 for tag in tags:
-                    if currentLine.find(tag.shortName + ":" + tag.name + " ") != -1:
+                    if currentTag == tag.shortName and currentSubTag == tag.name:
                         for tagAttribute in tag.attributes:
                             preparedTag = [tagAttribute + "\tAttribute", tagAttribute + "=\"\""]
                             autoCompletion.append(preparedTag)
