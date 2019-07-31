@@ -67,6 +67,55 @@ Example Taglib:
 Once parsed it will display like following:  
 ![](tld_plugin.gif)
 
+Additional Features
+-------
+
+As of 1.0.3 you can now also add *possible-values* xml array to your taglibs, this will display a dropdown of all the different values you can enter for the attributes. This is very handy if your taglib has a set of specific variables you need to add into the attributes.
+
+The syntax of your taglib should resemble this:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.1" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
+    <description>Example Tag library</description>
+    <tlib-version>1.0</tlib-version>
+    <short-name>Example</short-name>
+    <uri>http://example.com/Example</uri>
+    <tag>
+        <name>Example</name>
+        <description>Random Description</description>
+        <tag-class>com.example.Example</tag-class>
+        <tei-class>com.example.ExampleTEI</tei-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>somevar</name>
+            <required>false</required>
+            <possible-values>
+                <possible-value>true</possible-value>
+            	<possible-value>false</possible-value>
+            </possible-values>
+        </attribute>
+        <attribute>
+            <name>colour</name>
+            <required>true</required>
+            <possible-values>
+                <possible-value>Black</possible-value>
+            	<possible-value>Brown</possible-value>
+            	<possible-value>White</possible-value>
+            	<possible-value>Blue</possible-value>
+            	<possible-value>Red</possible-value>
+            	<possible-value>Orange</possible-value>
+            	<possible-value>Yellow</possible-value>
+            	<possible-value>Green</possible-value>
+            	<possible-value>Grey</possible-value>
+            </possible-values>
+        </attribute>
+    </tag>
+</taglib>
+```
+
+This will show up like this in Sublime Text:  
+![](possible_values.gif)
+
 LICENSE
 -------
 

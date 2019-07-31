@@ -72,34 +72,54 @@ plugin_loaded()
 class ShortNameTagCompletions(sublime_plugin.EventListener):
     def on_query_completions(self, view, prefix, locations):
         if(view.match_selector(locations[0], "text.html.jsp")):
-            pt = locations[0] - len(prefix) - 1
-            ch = view.substr(sublime.Region(pt, pt + 1))
+            # Get current word & line
+            word_bounds = view.word(locations[0])
+            line_bounds = view.line(locations[0])
+
+            # Get line to current cursor
+            prefix_bounds = sublime.Region(line_bounds.begin(), word_bounds.begin())
+            line_to_current = view.substr(prefix_bounds)
+
+            # Previous character
+            ch = view.substr(sublime.Region(locations[0] - 1, locations[0]))
+
+            # List of autocompletes to return
             autoCompletion = []
+
             if (ch == '"'):
-                pt = locations[0] - len(prefix) - 2
-                attribute = view.substr(view.word(pt))
-                currentSubTag = view.substr(view.word(pt - len(attribute) - 1))
-                currentTag = view.substr(view.word((pt - len(attribute) - 1) - len(currentSubTag) - 1))
-                for tag in tags:
-                    if currentTag == tag.shortName and currentSubTag == tag.name:
-                        for tagAttribute in tag.attributes:
-                            for possibleValue in tagAttribute.possibleValues:
-                                preparedTag = [possibleValue + "\tValue", possibleValue]
-                                autoCompletion.append(preparedTag)
+                # This will be true if we're inside attribute field
+                open_tag_index = line_to_current.rfind('<') + 1
+                if open_tag_index != -1:
+                    currentTag = view.substr(view.word(open_tag_index))
+                    currentSubTag = view.substr(view.word(open_tag_index + len(currentTag) + 1))
+                    attribute = view.substr(view.word(locations[0] - 2))
+                    for tag in tags:
+                        if currentTag == tag.shortName and currentSubTag == tag.name:
+                            for tagAttribute in tag.attributes:
+                                if attribute == tagAttribute.name:
+                                    for possibleValue in tagAttribute.possibleValues:
+                                        preparedTag = [possibleValue + "\tValue", possibleValue]
+                                        autoCompletion.append(preparedTag)
                 return (autoCompletion, sublime.INHIBIT_WORD_COMPLETIONS)
             if (ch == ' '):
-                currentSubTag = view.substr(view.word(pt))
-                currentTag = view.substr(view.word(pt - len(currentSubTag) - 1))
-                for tag in tags:
-                    if currentTag == tag.shortName and currentSubTag == tag.name:
-                        for tagAttribute in tag.attributes:
-                            if tagAttribute.required:
-                                preparedTag = [tagAttribute.name + "\tAttribute [Required]", tagAttribute.name + "=\"$0\""]
-                            else:
-                                preparedTag = [tagAttribute.name + "\tAttribute", tagAttribute.name + "=\"$0\""]
-                            autoCompletion.append(preparedTag)
+                # This will be true if we're inside a tag
+                open_tag_index = line_to_current.rfind('<') + 1
+                if open_tag_index != -1:
+                    currentTag = view.substr(view.word(open_tag_index))
+                    currentSubTag = view.substr(view.word(open_tag_index + len(currentTag) + 1))
+                    print(currentTag)
+                    print(currentSubTag)
+                    for tag in tags:
+                        if currentTag == tag.shortName and currentSubTag == tag.name:
+                            for tagAttribute in tag.attributes:
+                                if tagAttribute.required:
+                                    preparedTag = [tagAttribute.name + "\tAttribute [Required]", tagAttribute.name + "=\"$0\" "]
+                                else:
+                                    preparedTag = [tagAttribute.name + "\tAttribute", tagAttribute.name + "=\"$0\" "]
+                                autoCompletion.append(preparedTag)
                 return (autoCompletion)
             elif(ch == '<'):
+                # This will be true if we're about to declare a tag
                 for tag in tags:
                     preparedTag = [tag.shortName + ":" + tag.name + "\tTaglib", tag.shortName + ":" + tag.name + " $0></" + tag.shortName + ":" + tag.name + ">"]
                     autoCompletion.append(preparedTag)
