@@ -6,5 +6,6 @@
 	//Inside your .tld files you should have a xmlns attribute, by default it should be the one below
 	//but if you use anything else please insert it below.
 	//e.g. "xml_name_space": "http://java.sun.com/xml/ns/javaee"
-	"xml_name_space": "http://java.sun.com/xml/ns/javaee"
+	"xml_name_space": "http://java.sun.com/xml/ns/javaee",
+	"debug_enabled": false
 }
