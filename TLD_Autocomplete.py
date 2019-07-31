@@ -9,13 +9,10 @@ import sys
 tags = []
 
 def debug(string):
-    global settings
-    settings = sublime.load_settings('TLD_Autocomplete.sublime-settings')
     if settings.has("debug_enabled"):
         if settings.get("debug_enabled"):
             print(string)
 def plugin_loaded():
-    global maxTagLength
     global settings
     settings = sublime.load_settings('TLD_Autocomplete.sublime-settings')
     ns = {}
@@ -114,9 +111,9 @@ class ShortNameTagCompletions(sublime_plugin.EventListener):
                 # This will be true if we're inside attribute field
                 open_tag_index = line_to_current.rfind('<') + 1
                 if open_tag_index != -1:
-                    currentTag = view.substr(view.word(open_tag_index))
+                    currentTag = view.substr(view.word(line_bounds.begin() + open_tag_index))
                     debug("Current Tag: " + currentTag)
-                    currentSubTag = view.substr(view.word(open_tag_index + len(currentTag) + 1))
+                    currentSubTag = view.substr(view.word(line_bounds.begin() + open_tag_index + len(currentTag) + 1))
                     debug("Current Sub-tag: " + currentTag)
                     attribute = view.substr(view.word(locations[0] - 2))
                     debug("Current Attribute: " + currentTag)
@@ -132,11 +129,12 @@ class ShortNameTagCompletions(sublime_plugin.EventListener):
                 return (autoCompletion, sublime.INHIBIT_WORD_COMPLETIONS)
             if (ch == ' '):
                 # This will be true if we're inside a tag
+                print(line_to_current)
                 open_tag_index = line_to_current.rfind('<') + 1
                 if open_tag_index != -1:
-                    currentTag = view.substr(view.word(open_tag_index))
+                    currentTag = view.substr(view.word(line_bounds.begin() + open_tag_index))
                     debug("Current Tag: " + currentTag)
-                    currentSubTag = view.substr(view.word(open_tag_index + len(currentTag) + 1))
+                    currentSubTag = view.substr(view.word(line_bounds.begin() + open_tag_index + len(currentTag) + 1))
                     debug("Current Sub-tag: " + currentTag)
                     for tag in tags:
                         if currentTag == tag.shortName and currentSubTag == tag.name:
