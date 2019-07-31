@@ -107,7 +107,7 @@ class ShortNameTagCompletions(sublime_plugin.EventListener):
             # List of autocompletes to return
             autoCompletion = []
 
-            if (ch == '"'):
+            if (ch == '"' or ch == '\''):
                 # This will be true if we're inside attribute field
                 open_tag_index = line_to_current.rfind('<') + 1
                 if open_tag_index != -1:
@@ -129,7 +129,6 @@ class ShortNameTagCompletions(sublime_plugin.EventListener):
                 return (autoCompletion, sublime.INHIBIT_WORD_COMPLETIONS)
             if (ch == ' '):
                 # This will be true if we're inside a tag
-                print(line_to_current)
                 open_tag_index = line_to_current.rfind('<') + 1
                 if open_tag_index != -1:
                     currentTag = view.substr(view.word(line_bounds.begin() + open_tag_index))
@@ -153,6 +152,19 @@ class ShortNameTagCompletions(sublime_plugin.EventListener):
                     debug("Tag: " + tag.shortName + ":" + tag.name)
                     preparedTag = [tag.shortName + ":" + tag.name + "\tTaglib", tag.shortName + ":" + tag.name + " $0></" + tag.shortName + ":" + tag.name + ">"]
                     autoCompletion.append(preparedTag)
+                debug("Autocomplete has finished with " + str(len(autoCompletion)) +" results!")
+                return (autoCompletion)
+            elif(ch == ':'):
+                # This will be true if we're about to declare a subtag
+                open_tag_index = line_to_current.rfind('<') + 1
+                if open_tag_index != -1:
+                    currentTag = view.substr(view.word(line_bounds.begin() + open_tag_index))
+                    debug("Current Tag: " + currentTag)
+                    for tag in tags:
+                        if currentTag == tag.shortName:
+                            debug("Sub-tag: " + tag.shortName + ":" + tag.name)
+                            preparedTag = [tag.shortName + ":" + tag.name + "\tTaglib", tag.shortName + ":" + tag.name + " $0></" + tag.shortName + ":" + tag.name + ">"]
+                            autoCompletion.append(preparedTag)
                 debug("Autocomplete has finished with " + str(len(autoCompletion)) +" results!")
                 return (autoCompletion)
             else:
